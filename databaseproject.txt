@@ -1,0 +1,325 @@
+
+********************************** CREATE STATEMENTS ********************************************************************************
+create table CUSTOMER(
+customerID            int             not null,
+customerfirstname    char(20)        not null,
+customerlastname     char(20)        not null,
+customerphone        varchar2(11)     null,
+customeremail        varchar2(15)     null,
+address               varchar2(30)     null,
+constraint      customer_pk           primary key(customerID)
+);
+
+create table EMPLOYEE(
+employeeID                int             not null,
+employeefirstname         char(20)        not null,
+employeelastname          char(20)        not null,
+employeephone             varchar2(11)     not null,
+employeeemail             varchar2(15)     null,
+address                   varchar2(30)     null,
+position                  char(15)         not null,
+salary                    int              not null,
+constraint         employee_pk       primary key(employeeID)
+);		
+
+create table ITEM(
+itemID                 int                       not null,
+itemname               varchar2(40)              not null,
+itemdescription        varchar2(40)              not null,
+itemprice              numeric(5,2)              not null,
+constraint             item_pk                   primary key(itemID)
+);
+
+create table ITEM_VENDOR(
+itemID                  int                      not null,
+vendorID                int                      not null,
+purchasedate            DATE                     not null,
+quantity                int                      not null,
+purchasecost            numeric(5,2)             not null,
+constraint              item_ven_pk              primary key(itemID, vendorID, purchasedate),
+constraint              item_vendor_itemfk       foreign key(itemID)
+            references   ITEM(itemID),
+constraint              item_vendor_vendorfk     foreign key(vendorID)
+            references   VENDOR(vendorID)	
+);			
+
+
+
+create table HOURS(
+employeeID              int                     not null,
+workdate                DATE                    not null,
+hoursworked             numeric(4,2)            not null,
+constraint              hours_pk                primary key(employeeID, workdate),
+constraint              emp_hours_fk            foreign key(employeeID)
+                 references   employee(employeeID)
+);
+
+
+
+create table VENDOR(
+vendorID                int            not null,
+vendorname             char(20)        not null,
+contactfirstname       char(20)        not null,
+contactlastname        char(20)        not null,
+city                   char(15)        not null,
+postcode               char(8)         not null,
+vendorphone            varchar2(20)        null,
+vendoremail            varchar2(20)    null,
+constraint             vendor_pk       primary key(vendorID)
+);
+
+create table SALE(
+saleID                  int            not null,
+customerID              int            not null,
+employeeID              int            not null,
+saledate                DATE           not null,
+paymenttype             char(15)       not null,
+subtotal                numeric(5,2)   not null,
+tax                     numeric(5,2)   not null,
+total                   numeric(5,2)   not null,
+constraint              sale_pk        primary key(saleID),
+constraint              sale_customer_fk          foreign key(customerID)
+             references          CUSTOMER(customerID),
+constraint              sale_employee_fk          foreign key(employeeID)
+             references          EMPLOYEE(employeeID)
+);
+
+create table SALE_ITEM(
+saleID                   int              not null,
+itemID                   int              not null,
+itemprice              numeric(5,2)       not null,
+constraint        Sale_item_pk         primary key(saleID, itemID),
+constraint        sale_item_sale_fk         foreign key(saleID)
+       references     SALE(saleID),
+constraint        sale_item_fk              foreign key(itemID)
+       references     ITEM(itemID)
+);
+	   
+****************************** INSERT STATEMENTS  ****************************************************************************
+insert into customer values(1,'jack','till','258-678-113', 's@email.com', '34 tolcarne drive');
+insert into customer values(2,'breis','shen','236-773-127', 'b@email.com', '39 tolcarne drive');
+insert into customer values(3, 'jan', 'sing', '556-338-227', 'j@email.com', '43 tolcarne drive');
+insert into customer values(4, 'matt', 'terry', '227-339-122', 'm@email.com', '56 tolcarne drive');
+insert into customer values(5, 'kat', 'chens', '333-113-123', 'k@email.com', '236 tolcarne drive');
+insert into customer values(6, 'ron', 'van', '111-123-133', 'l@email.com', '48 tolcarne drive');
+insert into customer values(7, 'matt', 'spong', '332-163-153', 'g@email.com', '99 tolcarne drive');
+insert into customer values(8, 'perry', 'smith', '666-661-366', '2@email.com', '411 tolcarne drive');
+insert into customer values(9, 'ryan', 'gosling', '123-116-131', '3@email.com', '666 tolcarne drive');
+
+
+insert into employee values(1,'john','mcallister', '236-339-161', 'j@email.com', '3 Uxbridge Road', 'Assistant', 13000);
+insert into employee values(2,'mathew', 'basil', '339-115-121', 'mj@email.com', '6 Uxbridge Road', 'Assistant', 13000);
+insert into employee values(3,'sally', 'lewis', '233-112-161', 'sl@email.com', '7 Uxbridge Road', 'Assistant' , 13000);
+insert into employee values(4,'Terry', 'Fisher', '116-234-212', 'tf@email.com', '9 Uxbridge Road', 'Supervisor', 16000);
+
+insert into HOURS values(1,'26-feb-2018',8 );
+insert into HOURS values(2,'27-feb-2018',9);
+insert into Hours values(3,'28-feb-2018', 10);
+insert into Hours values(4,'01-mar-2018', 12);
+insert into Hours values(1,'02-mar-2018',10);
+insert into Hours values(2,'02-mar-2018', 9);
+insert into Hours values(3,'02-mar-2018', 9);
+insert into Hours values(4,'03-mar-2018',6);
+insert into Hours values(1,'04-mar-2018',8);
+insert into Hours values(2,'05-mar-2018',8);
+insert into Hours values(3,'06-mar-2018',9);
+insert into Hours values(4, '06-mar-2018', 5);
+
+
+
+insert into item values(1, 'lollipops', 'chupa chups', 2);
+insert into item values(2, 'ferrero rocher choc', 'nut free', 6);
+insert into item values(3, 'Cadbury Eclairs', 'fat free', 3);
+insert into item values(4, 'Cadbury Minieggs', 'reduced fat',3);
+insert into item values(5, 'Princes Gate Water', 'added vitamins', 1);
+insert into item values(6, ' Lion chocolate bar', 'allergen nuts', 1);
+insert into item values(7, 'Lays crisps', 'reduced fat', 0.50);
+insert into item values(8, 'kettle crisps', 'reduced fat', 1);
+insert into item values(9, 'Thai Sweet Chilli Chips', 'reduced fat', 1);
+insert into item values(10, 'B2P Ballpoint Pen', 'precision engineered', 0.30);
+
+insert into item_vendor values(1,2,'29-jan-2018', 20, 1.50);
+insert into item_vendor values(2,1,'30-jan-2018',30, 4);
+insert into item_vendor values(3,1,'01-feb-2018', 30, 2);
+insert into item_vendor values(4,1,'04-feb-2018', 20, 2);
+insert into item_vendor values(5,4,'05-feb-2018', 25, 0.50);
+insert into item_vendor values(6,2,'07-feb-2018', 30, 0.50);
+insert into item_vendor values(7,3,'09-feb-2018', 10, 0.50);
+insert into item_vendor values(8,5,'10-feb-2018',20, 0.50);
+insert into item_vendor values(9,6,'11-feb-2018',10, 0.50);
+insert into item_vendor values(10,7,'13-feb-2018',40, 0.30);
+
+insert into sale values(1,1,4,'01-feb-2018','bankcard', 8,1.6,9.6);
+insert into sale values(2,2,3,'02-feb-2018','cash', 6,1.2,7.2);
+insert into sale values(3,3,2,'05-feb-2018','bankcard', 3,0.6,3.6);
+insert into sale values(4,4,1,'08-feb-2018','cash', 2,0.4,2.4);
+insert into sale values(5,5,3,'19-feb-2018','cash', 1.50,0.3,1.8);
+insert into sale values(6,6,2,'03-mar-2018','bankcard', 1,0.2,1.2);
+insert into sale values(7,7,4,'05-mar-2018','cash', 1,0.2,1.2);
+insert into sale values(8,8,2,'06-mar-2018','bankcard', 3,0.6,3.6);
+insert into sale values(9,9,1,'18-mar-2018','bankcard', 0.30,0.06,0.36);
+
+
+insert into vendor values(1, 'Quality Foods co.','Sam', 'Oakes','London','W1 4FS', '569-908-456', 'qfc@email.com');
+insert into vendor values(2, 'Thames Food co.','Adam', 'Heywood','London','W3 7EY', '908-678-234', 'tfc@email.com');
+insert into vendor values(3, 'Sharavana Co.','Adam', 'Bangle', 'Birmingham','B3 9JZ', '456-543-876', 'sharav@email.com');
+insert into vendor values(4, 'London Co.', 'Nathaniel', 'Chell', 'Birmingham', 'B2 8TY', '567-890-345','londis@email.com');
+insert into vendor values(5, 'Ferrero Choc', 'Perdy', 'Kaur', 'London', 'W1C 2JK', '123-765-381', 'ferrero@email.com');
+insert into vendor values(6, 'Mcallister co.','Vincent', 'Paul', 'London','W2C 2JU', '178-569-909', 'mcallister@email.com');
+insert into vendor values(7, 'B2P LLC.', 'Paul', 'Carden', 'London','EC2M 4AY', '456-903-284', 'B2P@email.com');
+
+
+insert into sale_item values(1,1, 2);
+insert into sale_item values(1,2, 6);
+insert into sale_item values(2,3, 3);
+insert into sale_item values(2,4, 3);
+insert into sale_item values(3,4, 3);
+insert into sale_item values(4,8, 1);
+insert into sale_item values(4,9, 1);
+insert into sale_item values(5,6, 1);
+insert into sale_item values(5,7, 0.50);
+insert into sale_item values(6,5, 1);
+insert into sale_item values(7,8, 1);
+insert into sale_item values(8,4, 3);
+insert into sale_item values(9,10, 0.30);
+
+
+************************************************** QUERIES ******************************************************************8
+
+			
+*********Name the customers who bought cadbury minieggs? ********************
+								
+select customerfirstname, customerlastname
+from customer inner join sale
+     on CUSTOMER.customerID = SALE.customerID
+	     inner join sale_item
+		     on SALE.saleID = SALE_ITEM.saleID
+			     inner join ITEM
+				     on SALE_ITEM.itemID = ITEM.itemID
+					   where itemname = 'Cadbury Minieggs';
+
+					   
+***************Name all the vendor and the number of products purchased from each?**************
+
+select vendorname, COUNT(*) AS numberofitems
+from vendor inner join item_vendor
+     on VENDOR.vendorID = ITEM_VENDOR.vendorID
+group by vendorname;
+
+
+*******Name the employee who sold more than £5 in single transaction and sold Cadbury Eclairs ***************
+
+select employeefirstname, employeelastname
+from employee
+where employeeID in
+      (select employeeID
+	   from sale
+	       where saleID in
+		      (select saleID
+			   from sale_item
+			      where itemID in
+				      (select itemID
+					   from ITEM
+					    where total > 5
+						AND itemname = 'Cadbury Eclairs')));
+						
+
+************* Name all the customers who paid by bankcard and state the tax and their amount spent?*********
+select customerfirstname, customerlastname, sale.tax AS taxpaid, sale.total AS amountspent
+from customer inner join sale
+     on customer.customerID = sale.customerID
+where paymenttype = 'bankcard'
+order by customerfirstname;
+
+
+************* calculate the profit before tax for each of the sales? **************
+select sale_item.saleID, (SUM(sale_item.itemprice) - SUM(item_vendor.purchasecost)) AS profit
+from sale inner join sale_item
+     on sale.saleID = sale_item.saleID
+	     inner join item_vendor
+		    on sale_item.itemID = item_vendor.itemID
+group by sale_item.saleID;
+
+
+	 
+						
+						
+************* Name the employees with the amount of sales generated by them?***********						
+create view employeeview as
+        select employeefirstname, employeelastname, SUM(total) as TotalSale
+        from employee inner join sale
+		    on employee.employeeID = sale.employeeID
+        group by employeefirstname, employeelastname;
+
+select *
+from employeeview
+order by TotalSale desc;
+
+************* Name the customers who have bought more than £5 worth of items ***************
+create view customerview as
+            select customerfirstname, customerlastname, total
+			from customer inner join sale
+			    on customer.customerID = sale.customerID
+			where total > 5;	
+select *
+from customerview
+order by total desc;
+			
+****************Modification commands ****************************
+
+******Modify the phone number of Quality Foods co. to 569-908-455  **********			
+update vendor
+set vendorphone = '569-908-455'
+where vendorname = 'Quality Foods co.';	
+
+****** delete the vendor email for Thames Food co. ***************		
+delete 
+from HOURS
+where employeeid = 4
+  AND workdate = '06-mar-2018';
+  
+******* change the phone number of jack till to 258-678-123 and email to jt@email.com *********
+
+update customer
+set customerphone = '258-678-123', customeremail = 'jt@email.com'
+where customerfirstname = 'jack';
+
+
+
+************check constraints *******************
+alter table HOURS
+ADD CONSTRAINT chk_hours CHECK(hoursworked <= 15);
+*******insertion of data > 15 *******
+insert into Hours values(4, '06-mar-2018', 16);
+
+***********check constraint for SALE table *******************
+
+alter table sale
+ADD CONSTRAINT chk_trans CHECK(paymenttype in ('bankcard', 'cash'));
+
+insert into sale values(10,9,2,'19-mar-2018', 'cheque', 0.30,0.06,0.36);
+
+**************** creating updatable view *********************
+create view itemview AS
+     select itemname, purchasecost
+	 from item inner join item_vendor
+	      on item.itemID = item_vendor.itemID;
+update itemview
+set purchasecost = 0.6
+where itemname = 'B2P Ballpoint Pen';
+		  
+	 
+			
+	 
+	 
+						
+						
+
+
+
+
+
+		   
+
+
+
